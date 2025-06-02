@@ -16,18 +16,24 @@ class RotationTileService : TileService() {
         if (!Settings.System.canWrite(this)) {
             val intent = Intent(this, PermissionRequestActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addCategory(Intent.CATEGORY_LAUNCHER)
             }
             startActivity(intent)
-            Toast.makeText(this, "Please grant 'Modify system settings' permission", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                this,
+                "Please grant 'Modify system settings' permission",
+                Toast.LENGTH_LONG
+            ).show()
             return
         }
 
-        // Permission granted, proceed to toggle rotation...
         toggleRotation()
     }
 
+
     private fun toggleRotation() {
-        val currentRotation = Settings.System.getInt(contentResolver, Settings.System.USER_ROTATION, 0)
+        val currentRotation =
+            Settings.System.getInt(contentResolver, Settings.System.USER_ROTATION, 0)
         val newRotation = if (currentRotation == 0) 1 else 0
 
         Settings.System.putInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, 0)
@@ -47,20 +53,18 @@ class RotationTileService : TileService() {
     }
 
 
-
     override fun onStartListening() {
         super.onStartListening()
 
-        val currentRotation = Settings.System.getInt(contentResolver, Settings.System.USER_ROTATION, 0)
+        val currentRotation =
+            Settings.System.getInt(contentResolver, Settings.System.USER_ROTATION, 0)
+
         qsTile?.apply {
+            state = if (currentRotation == 0) Tile.STATE_INACTIVE else Tile.STATE_ACTIVE
             icon = Icon.createWithResource(
                 this@RotationTileService,
-                if (currentRotation == 0)
-                    R.drawable.ic_rotation_portrait
-                else
-                    R.drawable.ic_rotation_landscape
+                if (currentRotation == 0) R.drawable.ic_rotation_portrait else R.drawable.ic_rotation_landscape
             )
-            state = if (currentRotation == 0) Tile.STATE_INACTIVE else Tile.STATE_ACTIVE
             updateTile()
         }
     }

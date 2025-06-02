@@ -1,23 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="24dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="@android:color/transparent">
 
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="wrap_content"
+    <!-- Permission request container -->
+    <LinearLayout
+        android:id="@+id/permissionContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="This app needs permission to modify system settings to control screen rotation."
-        android:textSize="16sp"
-        android:textAlignment="center"
+        android:orientation="vertical"
         android:gravity="center"
-        android:paddingBottom="24dp"/>
+        android:visibility="gone">
 
-    <Button
-        android:id="@+id/grantButton"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Permission Required to Modify System Settings"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            android:paddingBottom="16dp"/>
+
+        <Button
+            android:id="@+id/grantButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Grant Permission" />
+
+    </LinearLayout>
+
+    <!-- Instructions container -->
+    <LinearLayout
+        android:id="@+id/instructionContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Grant Permission" />
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/instructionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="How to Use QS Rotate"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:paddingBottom="16dp" />
+
+        <TextView
+            android:id="@+id/instructionText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="• Use the Quick Settings tile to toggle rotation.\n• Only portrait and landscape modes are supported.\n• The app closes automatically after toggling.\n"
+            android:textSize="16sp"
+            android:paddingBottom="16dp" />
+
+        <Button
+            android:id="@+id/websiteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Visit Website" />
+    </LinearLayout>
+
 </LinearLayout>
