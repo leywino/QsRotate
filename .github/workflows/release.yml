@@ -36,13 +36,16 @@ jobs:
           keyPassword=${{ secrets.KEY_PASSWORD }}
           EOF
 
+      - name: 🛠️ Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: 📦 Build release APK
         run: ./gradlew assembleRelease
 
       - name: 🔍 Extract version from commit message
         id: version
         run: |
-          VERSION=$(echo "${{ github.event.head_commit.message }}" | grep -oP 'release v\K[0-9]+\.[0-9]+\.[0-9]+')
+          VERSION=$(echo "${{ github.event.head_commit.message }}" | grep -oP 'release v\K[0-9]+\.[0-9]+')
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: 🏷️ Rename APK
