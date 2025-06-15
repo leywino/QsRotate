@@ -40,7 +40,7 @@ class PermissionRequestActivity : AppCompatActivity() {
         }
 
         websiteButton.setOnClickListener {
-            val websiteIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://yourwebsite.com"))
+            val websiteIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/leywino/QsRotate"))
             startActivity(websiteIntent)
         }
     }
