@@ -1,0 +1,60 @@
+name: Release APK on Tag
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-release:
+    if: contains(github.event.head_commit.message, 'release v')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🧰 Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: 🔐 Decode keystore
+        run: |
+          mkdir -p keystore
+          echo "$KEYSTORE_BASE64" | base64 -d > keystore/release-key.jks
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+
+      - name: 📝 Create key.properties
+        run: |
+          cat <<EOF > key.properties
+          storeFile=keystore/release-key.jks
+          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          keyAlias=${{ secrets.KEY_ALIAS }}
+          keyPassword=${{ secrets.KEY_PASSWORD }}
+          EOF
+
+      - name: 📦 Build release APK
+        run: ./gradlew assembleRelease
+
+      - name: 🔍 Extract version from commit message
+        id: version
+        run: |
+          VERSION=$(echo "${{ github.event.head_commit.message }}" | grep -oP 'release v\K[0-9]+\.[0-9]+\.[0-9]+')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: 🏷️ Rename APK
+        run: |
+          VERSION=${{ steps.version.outputs.version }}
+          mv app/build/outputs/apk/release/app-release.apk qsrotate-v$VERSION.apk
+
+      - name: 🚀 Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          files: qsrotate-v${{ steps.version.outputs.version }}.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
